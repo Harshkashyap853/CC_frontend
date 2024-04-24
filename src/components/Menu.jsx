@@ -26,12 +26,12 @@ function Menu() {
               <span> - </span>
             </div>
             <div className="dollar">
-              <span>$2</span>
-              <span>$3</span>
-              <span>$4</span>
-              <span>$3</span>
-              <span>$4</span>
-              <span>$4</span>
+              <span>RS. 150</span>
+              <span>RS. 180</span>
+              <span>RS. 150</span>
+              <span>RS. 200</span>
+              <span>RS. 170</span>
+              <span>RS. 180</span>
             </div>
           </div>
         </div>
