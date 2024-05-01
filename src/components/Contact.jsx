@@ -10,7 +10,7 @@ function Contact() {
   const handleSearch = async () => {
     try {
       // Fetch reservation details from backend using confirmation code
-      const response = await fetch(`http://localhost:5000/api/reservation/${confirmationCode}`);
+      const response = await fetch(`https://coffeekle.azurewebsites.net/api/reservation/${confirmationCode}`);
       if (!response.ok) {
         throw new Error("Failed to fetch reservation");
       }
@@ -24,7 +24,7 @@ function Contact() {
   const handleDelete = async () => {
     try {
       // Send request to delete reservation using confirmation code
-      const response = await fetch(`http://localhost:5000/api/reservation/${confirmationCode}`, {
+      const response = await fetch(`https://coffeekle.azurewebsites.net/api/reservation/${confirmationCode}`, {
         method: "DELETE",
       });
       if (!response.ok) {

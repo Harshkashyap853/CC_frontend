@@ -68,7 +68,7 @@ function Reservation() {
     e.preventDefault();
     try {
       // Save reservation to MongoDB database
-      const response = await fetch("http://localhost:5000/api/reservation", {
+      const response = await fetch("https://coffeekle.azurewebsites.net/api/reservation", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
