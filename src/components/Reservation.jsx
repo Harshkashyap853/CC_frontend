@@ -1,3 +1,5 @@
+// Reservation.js
+
 import React, { useEffect, useState } from "react";
 
 const OPEN_HOURS = [
@@ -19,13 +21,19 @@ const OPEN_HOURS = [
 
 const formElement = "form";
 
+function generateConfirmationCode(reservation) {
+  const { first, last, time, date } = reservation;
+  return `${last}${time}${date}-${first}`.toUpperCase().replace(/\s/g, "");
+}
+
 function Reservation() {
   const [reservation, setReservation] = useState({ time: "What time?" });
   const [btnValidation, setBtnValidation] = useState(true);
   const [hours, setHours] = useState(OPEN_HOURS);
   const [success, setSuccess] = useState(false);
+  const [confirmationCode, setConfirmationCode] = useState("");
 
-  const validateBTn = () => {
+  const validateBtn = () => {
     if (
       reservation.date &&
       reservation.time !== "What time?" &&
@@ -37,6 +45,8 @@ function Reservation() {
   };
 
   const existingReservation = () => {
+    // Check existing reservations logic
+    // ...
     const storage = JSON.parse(localStorage.getItem("reservation"));
 
     if (!storage) return;
@@ -54,42 +64,55 @@ function Reservation() {
     setReservation((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // set reservation to local storage //
-    localStorage.setItem("reservation", JSON.stringify(reservation));
-
-    // check for existing reservation //
-    existingReservation();
-
-    // clear form inputs at once rather than creating states for every input only to change them back to default //
-    document.querySelector(formElement).reset();
-
-    setBtnValidation(true);
-    setSuccess(true);
+    try {
+      // Save reservation to MongoDB database
+      const response = await fetch("http://localhost:5000/api/reservation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...reservation, date: reservation.date.toString() }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to save reservation");
+      }
+      const data = await response.json();
+      console.log("Reservation saved:", data);
+      setConfirmationCode(generateConfirmationCode(reservation));
+      setSuccess(true);
+    } catch (error) {
+      console.error("Error saving reservation:", error);
+    }
   };
 
   useEffect(() => {
-    validateBTn();
+    validateBtn();
     existingReservation();
   }, [reservation]);
 
   return (
     <form className="reservation-form" onSubmit={handleSubmit}>
+      {/* Success message */}
       {success && (
-        <p
-          style={{
-            backgroundColor: "#212121",
-            padding: "0.5rem 0",
-            textAlign: "center",
-            color: "white",
-          }}
-        >
-          <span style={{ color: "green", fontWeight: "600" }}>Booked!</span>{" "}
-          <strong>Confirmation Code:</strong>{" "}
-          {`${reservation.last}${reservation.time}${reservation.date}`.toUpperCase()}
-        </p>
+        <div>
+          <p
+            style={{
+              backgroundColor: "#212121",
+              padding: "0.5rem 0",
+              textAlign: "center",
+              color: "white",
+            }}
+          >
+            <span style={{ color: "green", fontWeight: "600" }}>Booked!</span>{" "}
+            <strong>Confirmation Code:</strong> {confirmationCode}
+          </p>
+          <p>Please keep your confirmation code for future reference.</p>
+        </div>
       )}
+
+      {/* Form content */}
       <div>
         <input
           type="text"
