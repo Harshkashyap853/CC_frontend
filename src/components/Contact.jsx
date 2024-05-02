@@ -57,7 +57,7 @@ function Contact() {
     <p>Email: {reservationInfo.email}</p>
     <p>Date: {reservationInfo.date}</p>
     <p>Time: {reservationInfo.time}</p>
-    <button onClick={handleDelete}>Delete</button>
+    <button onClick={handleDelete}>Cancel</button>
   </div>
 )}
         </div>
